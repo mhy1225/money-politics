@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backBtn = document.getElementById('back-btn');
     const searchInput = document.getElementById('main-search');
     const searchTermDisplay = document.getElementById('search-term-display');
-    const exampleBtns = document.querySelectorAll('.example-btn');
+    // (已移除 exampleBtns 的抓取)
 
     const resultsContainer = document.getElementById('results-container');
     const totalAmountDisplay = document.getElementById('total-amount');
@@ -157,14 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') executeSearch(searchInput.value);
     });
 
-    // 點擊下方範例按鈕
-    exampleBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const term = e.target.textContent;
-            searchInput.value = term;
-            executeSearch(term);
-        });
-    });
+    // (已移除：下方範例按鈕的點擊事件)
 
     // 返回首頁按鈕
     backBtn.addEventListener('click', () => {
