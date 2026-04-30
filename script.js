@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ================= DOM 元素抓取 =================
     const landingPage = document.getElementById('landing-page');
     const resultsPage = document.getElementById('results-page');
     const searchBtn = document.getElementById('search-btn');
@@ -11,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalAmountDisplay = document.getElementById('total-amount');
     const totalCountDisplay = document.getElementById('total-count');
 
-    let rawData = []; 
+    let rawData = []; // 用來裝黃金紀錄的保險箱
 
-    // 💰 1. 讀取並解析 CSV 檔案
+    // ================= 1. 讀取並解析 CSV 檔案 =================
     async function loadCampaignFinanceData() {
         try {
             console.log('準備打開金庫大門... 讀取 A05_basic_all.csv');
@@ -26,54 +27,76 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`成功載入 ${rawData.length} 筆黃金紀錄！`);
         } catch (error) {
             console.error('讀取 CSV 失敗:', error);
-            alert('⚠️ 讀取 A05_basic_all.csv 失敗！請確認檔案有一起上傳到 GitHub！');
+            alert('⚠️ 讀取 A05_basic_all.csv 失敗！\n1. 請確認檔案有一起上傳到 GitHub。\n2. 檔名大小寫必須完全一致。');
         }
     }
 
-    // 簡易的 CSV 解析器
+    // 🛡️ 絕對防禦版的 CSV 解析器 (專門對付數字裡的逗號和引號)
     function parseCSV(text) {
         const lines = text.split(/\r?\n/);
         if (lines.length === 0) return [];
         
-        // 抓取第一行作為欄位名稱
+        // 抓第一行當標題
         const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
         const data = [];
         
         for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
-            // 處理 CSV 格式（忽略引號內的逗號以防止欄位錯亂）
-            const values = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+            if (!lines[i].trim()) continue; // 跳過空行
+            
+            let values = [];
+            let currentVal = '';
+            let inQuotes = false;
+            
+            // 逐字元掃描，避開引號內的逗號陷阱
+            for (let j = 0; j < lines[i].length; j++) {
+                let char = lines[i][j];
+                if (char === '"') {
+                    inQuotes = !inQuotes; // 進入或離開引號區
+                } else if (char === ',' && !inQuotes) {
+                    values.push(currentVal.trim());
+                    currentVal = ''; // 換下一個欄位
+                } else {
+                    currentVal += char;
+                }
+            }
+            values.push(currentVal.trim()); // 推入最後一個欄位
+
+            // 把標題和資料對應起來
             let rowObj = {};
             headers.forEach((header, index) => {
-                rowObj[header] = values[index] ? values[index].trim().replace(/"/g, '') : '';
+                // 如果該欄位有資料就存，沒有就給 '0'，順便清掉殘留的引號
+                rowObj[header] = values[index] ? values[index].replace(/"/g, '') : '0';
             });
             data.push(rowObj);
         }
         return data;
     }
 
-    // 💰 2. 執行搜尋並印出結果
+    // ================= 2. 執行搜尋邏輯 =================
     function executeSearch(term) {
         if (!term.trim()) {
             alert('請先輸入你要查的對象！金庫大門不會為空手而來的人打開！');
             return;
         }
 
+        // 只要任一欄位有符合關鍵字就抓出來
         const results = rawData.filter(row => {
             return Object.values(row).some(value => value.includes(term));
         });
 
         renderResults(term, results);
 
+        // 切換畫面
         landingPage.classList.remove('active');
         resultsPage.classList.add('active');
     }
 
-    // 💰 3. 將資料渲染到網頁上 (🔥 針對 A05_basic_all.csv 的真實欄位修改)
+    // ================= 3. 渲染奢華的搜尋結果 =================
     function renderResults(term, results) {
         searchTermDisplay.textContent = term;
-        resultsContainer.innerHTML = ''; 
+        resultsContainer.innerHTML = ''; // 清空舊資料
 
+        // 沒查到資料的窮光蛋畫面
         if (results.length === 0) {
             resultsContainer.innerHTML = '<h3 style="text-align:center; color:white; padding: 20px;">💸 這裡沒有他的黃金紀錄，他是個窮光蛋（或藏得很好）💸</h3>';
             totalAmountDisplay.textContent = 'NT$ 0';
@@ -83,52 +106,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let totalAmount = 0;
 
+        // 印出每一筆資料的俗氣卡片
         results.forEach(row => {
-            // ⚠️ 針對你的 CSV 真實欄位名稱進行抓取！
-            const amountStr = String(row['總收入'] || '0');
+            // 針對 A05_basic_all.csv 的專屬欄位抓取
             const candidate = row['姓名'] || '未知政客';
             const party = row['推薦政黨'] || '無黨籍';
-            const corpDonation = String(row['營利事業捐贈收入'] || '0');
-            const personalDonation = String(row['個人捐贈收入'] || '0');
+            
+            const amountStr = row['總收入'] || '0';
+            const corpDonationStr = row['營利事業捐贈收入'] || '0';
+            const personalDonationStr = row['個人捐贈收入'] || '0';
 
-            // 去除逗號，轉成純數字以便計算和格式化
+            // 拔除可能殘留的逗號，轉成純數字計算
             const amount = parseInt(amountStr.replace(/\D/g, ''), 10) || 0;
-            const corpAmount = parseInt(corpDonation.replace(/\D/g, ''), 10) || 0;
-            const personalAmount = parseInt(personalDonation.replace(/\D/g, ''), 10) || 0;
+            const corpAmount = parseInt(corpDonationStr.replace(/\D/g, ''), 10) || 0;
+            const personalAmount = parseInt(personalDonationStr.replace(/\D/g, ''), 10) || 0;
 
-            totalAmount += amount;
+            totalAmount += amount; // 累加總金額
 
-            // 產生專屬的俗氣卡片 (符合候選人總表的概念)
+            // 建立卡片 HTML
             const itemDiv = document.createElement('div');
             itemDiv.className = 'result-item';
             itemDiv.innerHTML = `
                 <div class="result-amount">NT$ ${amount.toLocaleString()}</div>
                 <div class="result-details">
-                    <strong>吸金政客：</strong> ${candidate} (${party}) <br>
-                    <strong>企業財團進貢：</strong> NT$ ${corpAmount.toLocaleString()} <br>
-                    <strong>一般選民(個人)捐贈：</strong> NT$ ${personalAmount.toLocaleString()}
+                    <strong>吸金政客：</strong> <span class="gold-text" style="font-size:1.2em;">${candidate}</span> (${party}) <br>
+                    <strong>🏢 企業財團進貢：</strong> NT$ ${corpAmount.toLocaleString()} <br>
+                    <strong>🧑‍🤝‍🧑 一般選民捐贈：</strong> NT$ ${personalAmount.toLocaleString()}
                 </div>
             `;
             resultsContainer.appendChild(itemDiv);
         });
 
-        // 更新頂部的炫富統計數字
+        // 更新最上方的土豪總計面板
         totalCountDisplay.textContent = results.length.toLocaleString();
         totalAmountDisplay.textContent = 'NT$ ' + totalAmount.toLocaleString();
     }
 
-    // 啟動時先讀取資料
+    // ================= 啟動與事件綁定 =================
+    
+    // 一開網頁就先偷偷去搬磚 (讀取 CSV)
     loadCampaignFinanceData();
 
-    // ================= 事件綁定 =================
+    // 點擊搜尋按鈕
     searchBtn.addEventListener('click', () => {
         executeSearch(searchInput.value);
     });
 
+    // 支援按 Enter 搜尋
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') executeSearch(searchInput.value);
     });
 
+    // 點擊下方範例按鈕
     exampleBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const term = e.target.textContent;
@@ -137,9 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // 返回首頁按鈕
     backBtn.addEventListener('click', () => {
         resultsPage.classList.remove('active');
         landingPage.classList.add('active');
-        searchInput.value = '';
+        searchInput.value = ''; // 清空搜尋框
     });
 });
