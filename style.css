@@ -1,0 +1,170 @@
+/* ================= 全局設定 ================= */
+:root {
+    --gold: #FFD700;
+    --dark-gold: #B8860B;
+    --tacky-red: #FF0000;
+    --bg-color: #0d0d0d;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: radial-gradient(circle, #2a2a2a 10%, #000000 80%);
+    color: white;
+    font-family: "Times New Roman", "標楷體", serif; /* 俗氣的正式感 */
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4 {
+    text-align: center;
+    color: var(--gold);
+    text-shadow: 2px 2px 5px var(--tacky-red), 0 0 10px var(--gold);
+}
+
+/* ================= 頁面切換邏輯 ================= */
+.page-section {
+    display: none;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-section.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= 元件樣式 ================= */
+.tacky-header {
+    background: linear-gradient(45deg, #4b0000, #ff0000, #4b0000);
+    border-bottom: 5px solid var(--gold);
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+}
+
+/* 搜尋區塊 */
+.search-section {
+    text-align: center;
+    margin: 40px 0;
+    padding: 30px;
+    border: 4px dashed var(--gold);
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.search-box input {
+    padding: 15px;
+    width: 60%;
+    font-size: 1.2rem;
+    border: 3px solid var(--dark-gold);
+    background: #222;
+    color: var(--gold);
+    border-radius: 5px;
+}
+
+/* 俗氣閃亮按鈕 */
+.bling-btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+    background: linear-gradient(to bottom, #FFF8DC, #FFD700, #B8860B);
+    border: 3px solid #FFF;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px var(--gold);
+    transition: transform 0.1s;
+}
+
+.bling-btn:active {
+    transform: scale(0.95);
+}
+
+.bling-btn.small {
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+
+/* 範例查詢按鈕 */
+.example-queries {
+    margin-top: 15px;
+    color: #ccc;
+}
+
+.example-btn {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.example-btn:hover {
+    background: var(--gold);
+    color: #000;
+}
+
+/* 卡片與列表 */
+.cards-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.tacky-card {
+    background: linear-gradient(135deg, #111, #333);
+    border: 3px solid var(--gold);
+    padding: 20px;
+    width: 45%;
+    box-shadow: 5px 5px 0px var(--tacky-red);
+}
+
+.result-item {
+    background: #1a1a1a;
+    border-left: 10px solid var(--gold);
+    margin: 15px 0;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.result-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--tacky-red);
+    text-shadow: 1px 1px 0px #fff;
+    width: 200px;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: space-around;
+    background: #222;
+    padding: 15px;
+    border: 2px solid var(--gold);
+    margin-bottom: 20px;
+}
+
+.bling-number {
+    font-size: 1.8rem;
+    color: var(--gold);
+    text-shadow: 0 0 5px var(--gold);
+}
+
+.tacky-select {
+    background: #000;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.gold-text {
+    color: var(--gold);
+}
