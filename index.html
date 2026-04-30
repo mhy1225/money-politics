@@ -1,4 +1,65 @@
-<!-- Quick Summary -->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 閃耀金權：政治獻金大解密 💰</title>
+    <!-- ⬇️ 就是這一行把黃金戰袍穿上去的！ -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 頂部俗氣導覽列 -->
+    <header class="tacky-header">
+        <h1>💎 閃耀金權 💎 <br><small>政治獻金查詢中心</small></h1>
+    </header>
+
+    <!-- ================= 專題首頁 (Landing Page) ================= -->
+    <main id="landing-page" class="page-section active">
+        
+        <!-- Hero 敘事 -->
+        <section class="hero-section">
+            <h2>權力的價格，到底有多昂貴？</h2>
+            <p>在這裡，每一分錢都會發光！揭開政商名流的黃金寶庫，看看是誰在用新台幣下架誰！</p>
+        </section>
+
+        <!-- 搜尋入口 (最重要 CTA) -->
+        <section class="search-section">
+            <div class="search-box">
+                <input type="text" id="main-search" placeholder="輸入政客或金主大名...">
+                <button id="search-btn" class="bling-btn">💰 立即搜刮 💰</button>
+            </div>
+            <!-- 範例查詢 -->
+            <div class="example-queries">
+                <span>試試手氣：</span>
+                <button class="example-btn">陳大財</button>
+                <button class="example-btn">綠能開發</button>
+                <button class="example-btn">建設公司</button>
+            </div>
+        </section>
+
+        <!-- 編輯精選案例 -->
+        <section class="editors-picks">
+            <h3>👑 編輯精選：頂級乾爹排行榜 👑</h3>
+            <div class="cards-container">
+                <div class="tacky-card">
+                    <h4>Top 1: 某某財團</h4>
+                    <p>狂撒一億元，只為搏君一笑？看看他們的投資佈局！</p>
+                </div>
+                <div class="tacky-card">
+                    <h4>Top 2: 神秘金主 X</h4>
+                    <p>化整為零的極致藝術，拆單捐款的教科書示範！</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= 結果列表頁 (Results List) ================= -->
+    <main id="results-page" class="page-section">
+        
+        <button id="back-btn" class="bling-btn small">🔙 返回金庫大門</button>
+        
+        <!-- Quick Summary -->
         <section class="quick-summary">
             <h2>搜尋結果：<span id="search-term-display" class="gold-text"></span></h2>
             <div class="summary-stats">
@@ -7,12 +68,28 @@
             </div>
         </section>
 
-        <!-- 排序 (保持原樣即可) -->
+        <!-- 排序 -->
         <section class="controls-section">
-            <!-- ... 原本的下拉選單 ... -->
+            <label for="sort-select">財富排序：</label>
+            <select id="sort-select" class="tacky-select">
+                <option value="amount-desc">💸 金額最高到最低</option>
+                <option value="amount-asc">🪙 金額最低到最高</option>
+                <option value="date-new">📅 最新進帳</option>
+            </select>
         </section>
 
-        <!-- 列表 (加上 id="results-container" 並清空裡面的假資料) -->
+        <!-- 列表 (用來裝真實資料的空盒子) -->
         <section class="results-list" id="results-container">
             <!-- 這裡面的內容會由 JavaScript 動態產生 -->
         </section>
+
+        <!-- 分頁 / Infinite Scroll 提示 -->
+        <section class="pagination">
+            <button class="bling-btn small">載入更多黃金紀錄...</button>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
